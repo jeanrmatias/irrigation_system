@@ -118,3 +118,7 @@ Status: Irrigação Concluída. Válvula fechada.
 ## 📄 Licença
 
 Projeto educacional — livre para uso e modificação.
+
+## INTEGRANTES:
+Matheus M De Souza
+Jean R Matias
