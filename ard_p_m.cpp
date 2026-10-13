@@ -4,7 +4,23 @@
 
 unsigned long tempoAnteriorLeitura = 0;
 // Intervalo aumentado para 10 segundos (ideal para o DHT11 e variações lentas)
-const unsigned long intervaloLeitura = 10000; 
+const unsigned long intervaloLeitura = 10000;
+
+// >>> ENVIO PARA O ESP32 (MQTT) — INÍCIO DA ADIÇÃO
+// Envia pela Serial uma linha no formato: "valorLeitura;umidade;temperatura\n"
+// O ESP32 (simulador MQTT) lê essa linha e publica cada valor no seu tópico.
+void enviarDadosESP32() {
+  // Só envia se a leitura do DHT foi válida (evita publicar "nan" no broker)
+  if (isnan(umidade) || isnan(temperatura)) {
+    return;
+  }
+  Serial.print(valorLeitura);      // umidade do solo (0-1023, menor = mais seco)
+  Serial.print(";");
+  Serial.print(umidade);           // umidade do ar (%)
+  Serial.print(";");
+  Serial.println(temperatura);     // temperatura (°C) — o println envia o '\n' que fecha a mensagem
+}
+// >>> ENVIO PARA O ESP32 (MQTT) — FIM DA ADIÇÃO
 
 void setup() {
   Serial.begin(9600);   
@@ -33,5 +49,6 @@ void loop() {
 
     lerSensores();                       
     verificarCondicaoRegar(tempoAtual);   
+    enviarDadosESP32();  // >>> NOVO: envia a leitura para o ESP32 publicar via MQTT
   }
 }
