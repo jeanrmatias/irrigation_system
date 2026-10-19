@@ -1,0 +1,10 @@
+# ESP32 (simulador): saída do CMake
+ESP32/build/
+ESP32/build_*/
+
+# PlatformIO
+Arduino/.pio/
+
+# Python
+__pycache__/
+*.pyc

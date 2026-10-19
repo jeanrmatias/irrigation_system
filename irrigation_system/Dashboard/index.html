@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irrigação · Painel</title>
+<!-- Chart.js vem junto do projeto (vendor/) para funcionar mesmo sem internet na apresentação -->
+<script src="/vendor/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #f4f6f1;
+    --card: #ffffff;
+    --texto: #1d2a22;
+    --suave: #5e6e64;
+    --borda: #dfe5dc;
+    --verde: #2f8a4c;
+    --verde-claro: #e3f2e6;
+    --azul: #2a6fb0;
+    --azul-claro: #e2edf8;
+    --laranja: #c36a12;
+    --laranja-claro: #fbeedd;
+    --vermelho: #c0392b;
+    --vermelho-claro: #fbe4e1;
+    --terra: #8a6a3f;
+    --sombra: 0 1px 2px rgba(20, 40, 25, .06), 0 4px 16px rgba(20, 40, 25, .05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121815;
+      --card: #1a221d;
+      --texto: #e4ece6;
+      --suave: #95a59a;
+      --borda: #2a352e;
+      --verde: #5cc27c;
+      --verde-claro: #1f3427;
+      --azul: #6aa9e6;
+      --azul-claro: #1b2a3a;
+      --laranja: #f0a04b;
+      --laranja-claro: #3a2a17;
+      --vermelho: #ef6f61;
+      --vermelho-claro: #3d1f1c;
+      --terra: #c9a473;
+      --sombra: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--texto);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .pagina { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  h1 { font-size: 22px; margin: 0; letter-spacing: -.01em; }
+  .sub { color: var(--suave); font-size: 13px; }
+  .selo { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--card); border: 1px solid var(--borda); }
+  .ponto { width: 9px; height: 9px; border-radius: 50%; background: var(--suave); }
+  .ok .ponto { background: var(--verde); box-shadow: 0 0 0 3px var(--verde-claro); }
+  .alerta .ponto { background: var(--laranja); }
+  .falha .ponto { background: var(--vermelho); }
+  .demo { background: var(--azul-claro); color: var(--azul); border-color: transparent; }
+
+  .avisos { display: grid; gap: 8px; margin-bottom: 14px; }
+  .aviso { padding: 10px 14px; border-radius: 10px; font-size: 14px; background: var(--laranja-claro); color: var(--laranja); border: 1px solid transparent; }
+  .aviso.grave { background: var(--vermelho-claro); color: var(--vermelho); }
+
+  .grade { display: grid; gap: 14px; }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g2 { grid-template-columns: 1.6fr 1fr; }
+  @media (max-width: 860px) { .g3, .g2 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--card); border: 1px solid var(--borda); border-radius: 14px; padding: 16px; box-shadow: var(--sombra); min-width: 0; }
+  .rotulo { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--suave); font-weight: 600; }
+  .valor { font-size: 36px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .valor small { font-size: 16px; color: var(--suave); font-weight: 500; margin-left: 2px; }
+  .linha { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+  .pilula { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--borda); color: var(--texto); }
+  .p-seco { background: var(--vermelho-claro); color: var(--vermelho); }
+  .p-baixo { background: var(--laranja-claro); color: var(--laranja); }
+  .p-medio { background: var(--verde-claro); color: var(--verde); }
+  .p-alto { background: var(--azul-claro); color: var(--azul); }
+  .barra { height: 8px; border-radius: 99px; background: var(--borda); overflow: hidden; margin-top: 12px; position: relative; }
+  .barra > span { position: absolute; inset: 0 auto 0 0; background: var(--terra); border-radius: 99px; transition: width .6s; }
+  .marca { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--card); }
+
+  .estado { display: flex; align-items: center; gap: 12px; }
+  .icone { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: var(--borda); flex: none; }
+  .icone svg { width: 22px; height: 22px; }
+  .estado .valor { font-size: 22px; margin: 0; }
+
+  .grafico { position: relative; height: 240px; margin-top: 10px; }
+
+  .controles h2 { font-size: 16px; margin: 0 0 12px; }
+  .bloco { padding: 12px 0; border-top: 1px solid var(--borda); }
+  .bloco:first-of-type { border-top: 0; padding-top: 0; }
+  .campo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+  input[type=number] { width: 84px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--borda); background: var(--bg); color: var(--texto); font: inherit; }
+  button { font: inherit; font-weight: 600; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--borda); background: var(--card); color: var(--texto); cursor: pointer; }
+  button:hover { border-color: var(--suave); }
+  button:disabled { opacity: .5; cursor: wait; }
+  button.primario { background: var(--azul); color: #fff; border-color: transparent; }
+  .segmento { display: inline-flex; border: 1px solid var(--borda); border-radius: 10px; overflow: hidden; }
+  .segmento button { border: 0; border-radius: 0; }
+  .segmento button.ativo { background: var(--verde); color: #fff; }
+  .retorno { font-size: 13px; color: var(--suave); margin-top: 8px; min-height: 1.4em; }
+  .retorno b { color: var(--texto); }
+  footer { margin-top: 18px; color: var(--suave); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <header>
+    <div>
+      <h1>Irrigação automática</h1>
+      <div class="sub">Dispositivo irrig001 · urn:ngsi-ld:Irrigacao:001 · FIWARE</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span id="seloDemo" class="selo demo" hidden>Modo demonstração</span>
+      <span id="seloConexao" class="selo"><span class="ponto"></span><span id="textoConexao">Conectando…</span></span>
+    </div>
+  </header>
+
+  <div id="avisos" class="avisos"></div>
+
+  <section class="grade g3">
+    <div class="card">
+      <div class="rotulo">Umidade do solo</div>
+      <div class="valor" id="vSolo">–</div>
+      <div class="linha"><span class="sub">leitura bruta 0–1023 · menor = mais seco</span><span id="nivelSolo" class="pilula">–</span></div>
+      <div class="barra"><span id="barraSolo" style="width:0"></span><i class="marca" style="left:9.8%"></i><i class="marca" style="left:29.3%"></i><i class="marca" style="left:48.9%"></i></div>
+    </div>
+    <div class="card">
+      <div class="rotulo">Umidade do ar</div>
+      <div class="valor" id="vUmid">–</div>
+      <div class="sub" id="umidNota">DHT11</div>
+    </div>
+    <div class="card">
+      <div class="rotulo">Temperatura</div>
+      <div class="valor" id="vTemp">–</div>
+      <div class="sub" id="tempNota">DHT11</div>
+    </div>
+  </section>
+
+  <section class="grade g3" style="margin-top:14px">
+    <div class="card estado">
+      <div class="icone" id="icValvula"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z"/></svg></div>
+      <div><div class="rotulo">Válvula</div><div class="valor" id="vValvula">–</div></div>
+    </div>
+    <div class="card estado">
+      <div class="icone" id="icModo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></div>
+      <div><div class="rotulo">Modo</div><div class="valor" id="vModo">–</div></div>
+    </div>
+    <div class="card estado">
+      <div class="icone" id="icLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10h2M8 14h8"/></svg></div>
+      <div><div class="rotulo">Arduino ↔ ESP32</div><div class="valor" id="vLink">–</div></div>
+    </div>
+  </section>
+
+  <section class="grade g2" style="margin-top:14px">
+    <div class="grade">
+      <div class="card">
+        <div class="rotulo">Solo · histórico</div>
+        <div class="grafico"><canvas id="gSolo"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="rotulo">Ar · histórico</div>
+        <div class="grafico"><canvas id="gAr"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card controles">
+      <h2>Controle remoto</h2>
+      <div class="bloco">
+        <div class="rotulo">Regar agora</div>
+        <div class="campo">
+          <input id="segundos" type="number" min="1" max="30" value="5" aria-label="segundos">
+          <span class="sub">segundos</span>
+          <button class="primario" id="btRegar">Regar</button>
+          <button id="btParar">Parar</button>
+        </div>
+        <div class="retorno" id="retRegar"></div>
+      </div>
+      <div class="bloco">
+        <div class="rotulo">Modo de operação</div>
+        <div class="campo">
+          <div class="segmento">
+            <button id="btAuto" data-modo="A">AUTO</button>
+            <button id="btManual" data-modo="M">MANUAL</button>
+          </div>
+        </div>
+        <div class="sub" style="margin-top:8px">AUTO: o Arduino rega sozinho quando o solo fica seco. MANUAL: só rega por comando.</div>
+        <div class="retorno" id="retModo"></div>
+      </div>
+      <div class="bloco">
+        <div class="rotulo">Caminho de um comando</div>
+        <div class="sub" style="margin-top:6px">Painel → Orion → IoT Agent → MQTT → ESP32 → UART → Arduino → servo. A confirmação volta pelo mesmo caminho.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="rodape">–</footer>
+</div>
+
+<script>
+const SOLO_SECO = 100, SOLO_MEDIO = 300, SOLO_ALTO = 500;
+const SEM_DADOS_S = 15;            // sem atualização há mais que isso = alerta
+const ERRO_DHT = 1, ERRO_SOLO = 2;
+const $ = (id) => document.getElementById(id);
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function nivelSolo(v) {
+  if (v < SOLO_SECO) return ["SECO", "p-seco"];
+  if (v < SOLO_MEDIO) return ["BAIXO", "p-baixo"];
+  if (v < SOLO_ALTO) return ["MÉDIO", "p-medio"];
+  return ["ALTO", "p-alto"];
+}
+const hora = (iso) => new Date(iso).toLocaleTimeString("pt-BR");
+
+// ---------- gráficos ----------
+// Se o Chart.js não carregar, o painel continua funcionando, só sem gráficos.
+const temGraficos = typeof Chart !== "undefined";
+if (!temGraficos) {
+  for (const id of ["gSolo", "gAr"]) $(id).parentElement.textContent = "Gráfico indisponível (Chart.js não carregou).";
+} else {
+Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+Chart.defaults.color = css("--suave");
+Chart.defaults.borderColor = css("--borda");
+
+function linhaLimite(valor, cor, rotulo) {
+  return { label: rotulo, data: [], borderColor: cor, borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false, _limite: valor };
+}
+
+var gSolo = new Chart($("gSolo"), {
+  type: "line",
+  data: { labels: [], datasets: [
+    { label: "Solo", data: [], borderColor: css("--terra"), backgroundColor: css("--terra") + "22", fill: true, tension: .3, pointRadius: 0, borderWidth: 2 },
+    linhaLimite(SOLO_SECO, css("--vermelho"), "Seco (<100)"),
+    linhaLimite(SOLO_MEDIO, css("--laranja"), "Médio (300)"),
+  ]},
+  options: { animation: false, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+    scales: { y: { suggestedMin: 0, suggestedMax: 600 }, x: { ticks: { maxTicksLimit: 6 } } },
+    plugins: { legend: { labels: { boxWidth: 12 } } } }
+});
+
+var gAr = new Chart($("gAr"), {
+  type: "line",
+  data: { labels: [], datasets: [
+    { label: "Umidade (%)", data: [], borderColor: css("--azul"), tension: .3, pointRadius: 0, borderWidth: 2, yAxisID: "y" },
+    { label: "Temperatura (°C)", data: [], borderColor: css("--laranja"), tension: .3, pointRadius: 0, borderWidth: 2, yAxisID: "y1" },
+  ]},
+  options: { animation: false, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+    scales: { y: { position: "left", suggestedMin: 20, suggestedMax: 90 },
+              y1: { position: "right", suggestedMin: 15, suggestedMax: 35, grid: { drawOnChartArea: false } },
+              x: { ticks: { maxTicksLimit: 6 } } },
+    plugins: { legend: { labels: { boxWidth: 12 } } } }
+});
+}
+
+async function api(caminho, opcoes) {
+  const r = await fetch(caminho, opcoes);
+  const j = await r.json().catch(() => ({ ok: false, erro: "resposta inválida" }));
+  if (!r.ok || !j.ok) throw new Error(j.erro || ("HTTP " + r.status));
+  return j;
+}
+
+async function atualizarHistorico() {
+  if (!temGraficos) return;
+  try {
+    const [solo, umid, temp] = await Promise.all(
+      ["umidadeSolo", "umidadeAr", "temperatura"].map(a => api(`/api/historico?attr=${a}&n=90`))
+    );
+    gSolo.data.labels = solo.pontos.map(p => hora(p.t));
+    gSolo.data.datasets[0].data = solo.pontos.map(p => p.v);
+    for (const d of gSolo.data.datasets.slice(1)) d.data = solo.pontos.map(() => d._limite);
+    gSolo.update();
+
+    // umidade e temperatura chegam juntas, mas podem ter tamanhos diferentes
+    const base = umid.pontos.length >= temp.pontos.length ? umid.pontos : temp.pontos;
+    gAr.data.labels = base.map(p => hora(p.t));
+    gAr.data.datasets[0].data = umid.pontos.map(p => p.v);
+    gAr.data.datasets[1].data = temp.pontos.map(p => p.v);
+    gAr.update();
+  } catch (e) { /* o aviso de conexão já aparece pelo /api/estado */ }
+}
+
+function selo(classe, texto) {
+  $("seloConexao").className = "selo " + classe;
+  $("textoConexao").textContent = texto;
+}
+
+function avisos(lista) {
+  const el = $("avisos");
+  el.replaceChildren(...lista.map(([grave, texto]) => {
+    const d = document.createElement("div");
+    d.className = "aviso" + (grave ? " grave" : "");
+    d.textContent = texto;
+    return d;
+  }));
+}
+
+function pintar(icone, fundo, cor) {
+  $(icone).style.background = fundo;
+  $(icone).style.color = cor;
+}
+
+function retornoComando(el, nome, d) {
+  const st = d[nome + "_status"], info = d[nome + "_info"];
+  if (!st) return;
+  const textos = { PENDING: "aguardando o dispositivo…", OK: "confirmado", ERROR: "erro" };
+  el.innerHTML = "";
+  el.append("Último comando: ");
+  const b = document.createElement("b");
+  b.textContent = (textos[st] || st) + (info && info !== "OK" ? ` (${info})` : "");
+  el.append(b);
+}
+
+async function atualizarEstado() {
+  let r;
+  try {
+    r = await api("/api/estado");
+  } catch (e) {
+    selo("falha", "Sem conexão com o FIWARE");
+    avisos([[true, e.message]]);
+    return;
+  }
+  const d = r.dados;
+  $("seloDemo").hidden = !r.demo;
+  const lista = [];
+
+  // atualidade dos dados
+  const idade = d.TimeInstant ? (Date.now() - new Date(d.TimeInstant).getTime()) / 1000 : null;
+  if (idade !== null && idade > SEM_DADOS_S) {
+    selo("alerta", `Sem dados há ${Math.round(idade)} s`);
+    lista.push([true, "Nenhum dado novo chegando. O ESP32 (simulador) está rodando e conectado ao MQTT?"]);
+  } else {
+    selo("ok", "Ao vivo");
+  }
+
+  const erros = Number(d.erros || 0);
+  const online = Number(d.arduinoOnline) === 1;
+  if (!online) lista.push([true, "O ESP32 perdeu a comunicação com o Arduino (cabo, porta USB ou Arduino travado)."]);
+  if (erros & ERRO_SOLO) lista.push([false, "Sensor de solo desconectado: a rega automática está suspensa por segurança."]);
+  if (erros & ERRO_DHT) lista.push([false, "Falha no DHT11: umidade e temperatura do ar mostram o último valor válido."]);
+  avisos(lista);
+
+  // solo
+  const solo = Number(d.umidadeSolo);
+  if (!isNaN(solo)) {
+    $("vSolo").textContent = solo;
+    const [txt, cls] = nivelSolo(solo);
+    $("nivelSolo").textContent = txt;
+    $("nivelSolo").className = "pilula " + cls;
+    $("barraSolo").style.width = Math.min(100, solo / 1023 * 100) + "%";
+  }
+  // ar
+  if (d.umidadeAr !== undefined) $("vUmid").innerHTML = `${Number(d.umidadeAr).toFixed(1)}<small>%</small>`;
+  if (d.temperatura !== undefined) $("vTemp").innerHTML = `${Number(d.temperatura).toFixed(1)}<small>°C</small>`;
+  $("umidNota").textContent = (erros & ERRO_DHT) ? "DHT11 com falha · último valor válido" : "DHT11";
+  $("tempNota").textContent = $("umidNota").textContent;
+
+  // estados
+  const aberta = Number(d.valvula) === 1;
+  $("vValvula").textContent = aberta ? "Regando" : "Fechada";
+  pintar("icValvula", aberta ? css("--azul-claro") : css("--borda"), aberta ? css("--azul") : css("--suave"));
+
+  const auto = d.modo === "A";
+  $("vModo").textContent = auto ? "Automático" : "Manual";
+  pintar("icModo", auto ? css("--verde-claro") : css("--laranja-claro"), auto ? css("--verde") : css("--laranja"));
+  $("btAuto").classList.toggle("ativo", auto);
+  $("btManual").classList.toggle("ativo", !auto);
+
+  $("vLink").textContent = online ? "Online" : "Offline";
+  pintar("icLink", online ? css("--verde-claro") : css("--vermelho-claro"), online ? css("--verde") : css("--vermelho"));
+
+  retornoComando($("retRegar"), "regar", d);
+  retornoComando($("retModo"), "definirModo", d);
+
+  $("rodape").textContent = d.TimeInstant
+    ? `Última atualização do dispositivo: ${new Date(d.TimeInstant).toLocaleString("pt-BR")}`
+    : "";
+}
+
+async function enviar(comando, valor, botao, retorno) {
+  botao.disabled = true;
+  retorno.textContent = "Enviando…";
+  try {
+    await api("/api/comando", { method: "POST", headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ comando, valor: String(valor) }) });
+    retorno.textContent = "Enviado. Aguardando confirmação do dispositivo…";
+    setTimeout(atualizarEstado, 1200);
+  } catch (e) {
+    retorno.textContent = "Falhou: " + e.message;
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+$("btRegar").onclick = () => {
+  const s = Math.max(1, Math.min(30, parseInt($("segundos").value || "5", 10)));
+  $("segundos").value = s;
+  enviar("regar", s, $("btRegar"), $("retRegar"));
+};
+$("btParar").onclick = () => enviar("regar", 0, $("btParar"), $("retRegar"));
+for (const b of [$("btAuto"), $("btManual")]) {
+  b.onclick = () => enviar("definirModo", b.dataset.modo, b, $("retModo"));
+}
+
+atualizarEstado();
+atualizarHistorico();
+setInterval(atualizarEstado, 2000);
+setInterval(atualizarHistorico, 5000);
+</script>
+</body>
+</html>
