@@ -1,0 +1,13 @@
+{
+  "name": "irrigacao-node-red",
+  "version": "1.0.0",
+  "description": "Dashboard do sistema de irrigação no Node-RED (com simulador do Arduino/ESP32)",
+  "private": true,
+  "scripts": {
+    "start": "node-red --userDir . --port 1880 flows.json"
+  },
+  "dependencies": {
+    "@flowfuse/node-red-dashboard": "1.34.1",
+    "node-red": "5.0.9"
+  }
+}

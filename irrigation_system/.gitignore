@@ -1,0 +1,20 @@
+# ESP32 (simulador): saída do CMake
+ESP32/build/
+ESP32/build_*/
+
+# PlatformIO
+Arduino/.pio/
+
+# Python
+__pycache__/
+*.pyc
+
+# Node-RED (arquivos gerados ao rodar; o flow fica em NodeRED/flows.json)
+NodeRED/node_modules/
+NodeRED/.config.*
+NodeRED/.flows*.backup
+NodeRED/.flows_cred.json
+NodeRED/flows_cred.json
+NodeRED/settings.js
+NodeRED/lib/
+NodeRED/context/
