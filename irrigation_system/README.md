@@ -22,6 +22,7 @@ Um irrigador automático de vaso ou canteiro. O **Arduino UNO** mede a umidade d
 | Firmware do ESP32 | [`ESP32/`](ESP32) | Ponte UART ↔ MQTT (roda no simulador de ESP32 da disciplina) |
 | FIWARE | [`FIWARE/`](FIWARE) | Script que cadastra o dispositivo no IoT Agent, no Orion e no STH-Comet |
 | Dashboard | [`Dashboard/`](Dashboard) | Painel web com valores, histórico e controle remoto |
+| Dashboard no Node-RED | [`NodeRED/`](NodeRED) | O mesmo painel no Node-RED, com simulador do Arduino e do ESP32 (roda sem hardware) |
 | Ferramentas | [`ferramentas/`](ferramentas) | Arduino falso (para testar sem a placa) e testes da lógica |
 
 ## Hardware e ligações

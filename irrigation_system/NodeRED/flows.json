@@ -1,0 +1,1366 @@
+[
+    {
+        "id": "tab_irrigacao",
+        "type": "tab",
+        "label": "Irrigação",
+        "disabled": false,
+        "info": "Dashboard do sistema de irrigação. Os dados vêm do simulador (Arduino + ESP32 falsos) ou do MQTT do FIWARE. Veja NodeRED/README.md."
+    },
+    {
+        "id": "ui_base",
+        "type": "ui-base",
+        "name": "Irrigação",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "ui_tema",
+        "type": "ui-theme",
+        "name": "Irrigação (verde)",
+        "colors": {
+            "surface": "#2e7d32",
+            "primary": "#2e7d32",
+            "bgPage": "#f3f6f1",
+            "groupBg": "#ffffff",
+            "groupOutline": "#dce4d7"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "8px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "ui_pagina",
+        "type": "ui-page",
+        "name": "Sistema de irrigação",
+        "ui": "ui_base",
+        "path": "/irrigacao",
+        "icon": "water",
+        "layout": "grid",
+        "theme": "ui_tema",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "g_solo",
+        "type": "ui-group",
+        "name": "Umidade do solo",
+        "page": "ui_pagina",
+        "width": "3",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_ar",
+        "type": "ui-group",
+        "name": "Ar",
+        "page": "ui_pagina",
+        "width": "6",
+        "height": "1",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_estado",
+        "type": "ui-group",
+        "name": "Estado do sistema",
+        "page": "ui_pagina",
+        "width": "3",
+        "height": "1",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_hist_solo",
+        "type": "ui-group",
+        "name": "Histórico do solo (10 min)",
+        "page": "ui_pagina",
+        "width": "6",
+        "height": "1",
+        "order": 4,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_hist_ar",
+        "type": "ui-group",
+        "name": "Histórico do ar (10 min)",
+        "page": "ui_pagina",
+        "width": "6",
+        "height": "1",
+        "order": 5,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_controle",
+        "type": "ui-group",
+        "name": "Controle remoto",
+        "page": "ui_pagina",
+        "width": "6",
+        "height": "1",
+        "order": 6,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "g_simulacao",
+        "type": "ui-group",
+        "name": "Simulação (só para testes)",
+        "page": "ui_pagina",
+        "width": "6",
+        "height": "1",
+        "order": 7,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "w_gauge_solo",
+        "type": "ui-gauge",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 4,
+        "gtype": "gauge-tank",
+        "gstyle": "rounded",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "wires": [
+            []
+        ],
+        "group": "g_solo",
+        "title": "% da escala (0–1023)",
+        "units": "",
+        "min": 0,
+        "max": 1023,
+        "segments": [
+            {
+                "from": "0",
+                "color": "#e53935"
+            },
+            {
+                "from": "100",
+                "color": "#fb8c00"
+            },
+            {
+                "from": "300",
+                "color": "#43a047"
+            },
+            {
+                "from": "500",
+                "color": "#1e88e5"
+            }
+        ],
+        "x": 1420,
+        "y": 120,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_nivel_solo",
+        "type": "ui-text",
+        "z": "tab_irrigacao",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "name": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": true,
+        "font": "Helvetica",
+        "fontSize": 18,
+        "color": "#2e7d32",
+        "wrapText": true,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "wires": [],
+        "group": "g_solo",
+        "label": "Nível",
+        "x": 1420,
+        "y": 160,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_gauge_umidade",
+        "type": "ui-gauge",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "wires": [
+            []
+        ],
+        "group": "g_ar",
+        "title": "Umidade do ar",
+        "units": "%",
+        "min": 0,
+        "max": 100,
+        "segments": [
+            {
+                "from": "0",
+                "color": "#e53935"
+            },
+            {
+                "from": "30",
+                "color": "#fb8c00"
+            },
+            {
+                "from": "40",
+                "color": "#43a047"
+            },
+            {
+                "from": "80",
+                "color": "#1e88e5"
+            }
+        ],
+        "x": 1420,
+        "y": 200,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_gauge_temp",
+        "type": "ui-gauge",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 2,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "rounded",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "wires": [
+            []
+        ],
+        "group": "g_ar",
+        "title": "Temperatura",
+        "units": "°C",
+        "min": 0,
+        "max": 50,
+        "segments": [
+            {
+                "from": "0",
+                "color": "#1e88e5"
+            },
+            {
+                "from": "15",
+                "color": "#43a047"
+            },
+            {
+                "from": "30",
+                "color": "#fb8c00"
+            },
+            {
+                "from": "38",
+                "color": "#e53935"
+            }
+        ],
+        "x": 1420,
+        "y": 240,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_estado",
+        "type": "ui-template",
+        "z": "tab_irrigacao",
+        "group": "g_estado",
+        "page": "",
+        "ui": "",
+        "name": "Estado do sistema",
+        "order": 1,
+        "width": 3,
+        "height": 0,
+        "head": "",
+        "format": "<template>\n  <div class=\"irr-estado\" v-if=\"msg && msg.payload\">\n    <div v-for=\"a in msg.payload.avisos\" :key=\"a.id\" :class=\"['irr-aviso', a.nivel]\">\n      <v-icon size=\"small\">mdi-alert</v-icon> {{ a.texto }}\n    </div>\n    <div v-if=\"!msg.payload.avisos.length\" class=\"irr-aviso tudo-ok\">\n      <v-icon size=\"small\">mdi-check-circle</v-icon> Tudo certo\n    </div>\n    <div v-for=\"l in msg.payload.linhas\" :key=\"l.rotulo\" class=\"irr-linha\">\n      <span>{{ l.rotulo }}</span><b :class=\"l.classe\">{{ l.valor }}</b>\n    </div>\n  </div>\n  <div v-else class=\"irr-vazio\">Aguardando dados...</div>\n</template>\n\n<style>\n.irr-estado { display: flex; flex-direction: column; gap: 6px; width: 100%; }\n.irr-aviso { border-radius: 6px; padding: 8px 10px; font-size: 0.9rem; font-weight: 500; }\n.irr-aviso.ruim { background: #fdecea; color: #b71c1c; }\n.irr-aviso.atencao { background: #fff4e0; color: #8a4b00; }\n.irr-aviso.tudo-ok { background: #e8f5e9; color: #1b5e20; }\n.irr-linha { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid #eef1ec; font-size: 0.95rem; }\n.irr-linha span { color: #5f6b5c; }\n.irr-linha b.bom { color: #2e7d32; }\n.irr-linha b.ruim { color: #c62828; }\n.irr-linha b.atencao { color: #b26a00; }\n.irr-linha b.agua { color: #1565c0; }\n.irr-vazio { color: #888; padding: 8px 0; }\n</style>",
+        "storeOutMessages": true,
+        "passthru": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "wires": [
+            []
+        ],
+        "x": 1420,
+        "y": 280,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_chart_solo",
+        "type": "ui-chart",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 2,
+        "showLegend": true,
+        "removeOlder": 10,
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 5,
+        "className": "",
+        "interpolation": "linear",
+        "wires": [
+            []
+        ],
+        "group": "g_hist_solo",
+        "label": "Umidade do solo",
+        "ymin": "0",
+        "ymax": "1023",
+        "colors": [
+            "#1e88e5",
+            "#e53935",
+            "#fb8c00",
+            "#2CA02C",
+            "#A347E1",
+            "#D62728",
+            "#FF9896",
+            "#9467BD",
+            "#C5B0D5"
+        ],
+        "x": 1420,
+        "y": 360,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_chart_ar",
+        "type": "ui-chart",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 2,
+        "showLegend": true,
+        "removeOlder": 10,
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 5,
+        "className": "",
+        "interpolation": "linear",
+        "wires": [
+            []
+        ],
+        "group": "g_hist_ar",
+        "label": "Ar",
+        "ymin": "0",
+        "ymax": "100",
+        "colors": [
+            "#00897b",
+            "#e65100",
+            "#FF7F0E",
+            "#2CA02C",
+            "#A347E1",
+            "#D62728",
+            "#FF9896",
+            "#9467BD",
+            "#C5B0D5"
+        ],
+        "x": 1420,
+        "y": 400,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_notificacao",
+        "type": "ui-notification",
+        "z": "tab_irrigacao",
+        "ui": "ui_base",
+        "position": "top right",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "4",
+        "showCountdown": true,
+        "outputs": 0,
+        "allowDismiss": true,
+        "dismissText": "Fechar",
+        "allowConfirm": false,
+        "confirmText": "Confirmar",
+        "raw": false,
+        "className": "",
+        "name": "Avisos",
+        "wires": [],
+        "x": 1420,
+        "y": 440,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_slider_segundos",
+        "type": "ui-slider",
+        "z": "tab_irrigacao",
+        "group": "g_controle",
+        "name": "",
+        "label": "Tempo de rega (s)",
+        "tooltip": "",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "outs": "end",
+        "topic": "segundos",
+        "topicType": "str",
+        "thumbLabel": "always",
+        "showTicks": "false",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "className": "",
+        "iconPrepend": "mdi-timer-outline",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": true,
+        "wires": [
+            [
+                "n_salvar_segundos"
+            ]
+        ],
+        "x": 460,
+        "y": 680,
+        "g": "grp_controle"
+    },
+    {
+        "id": "w_btn_regar",
+        "type": "ui-button",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "water",
+        "iconPosition": "left",
+        "payload": "regar",
+        "payloadType": "str",
+        "topicType": "str",
+        "buttonColor": "#1565c0",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "wires": [
+            [
+                "n_comando"
+            ]
+        ],
+        "group": "g_controle",
+        "label": "Regar agora",
+        "topic": "regar",
+        "x": 460,
+        "y": 740,
+        "g": "grp_controle"
+    },
+    {
+        "id": "w_btn_parar",
+        "type": "ui-button",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "stop",
+        "iconPosition": "left",
+        "payload": "parar",
+        "payloadType": "str",
+        "topicType": "str",
+        "buttonColor": "#c62828",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "wires": [
+            [
+                "n_comando"
+            ]
+        ],
+        "group": "g_controle",
+        "label": "Parar",
+        "topic": "parar",
+        "x": 460,
+        "y": 780,
+        "g": "grp_controle"
+    },
+    {
+        "id": "w_switch_modo",
+        "type": "ui-switch",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "decouple": false,
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "A",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "M",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "wires": [
+            [
+                "n_comando"
+            ]
+        ],
+        "group": "g_controle",
+        "label": "Modo AUTO (desligado = MANUAL)",
+        "topic": "modo",
+        "x": 1420,
+        "y": 320,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_resposta",
+        "type": "ui-text",
+        "z": "tab_irrigacao",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": true,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "wires": [],
+        "group": "g_controle",
+        "label": "Resposta do dispositivo",
+        "x": 1420,
+        "y": 480,
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "w_sim_arduino",
+        "type": "ui-switch",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 1,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "decouple": false,
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "group": "g_simulacao",
+        "label": "Arduino ligado",
+        "topic": "sim/arduinoLigado",
+        "x": 460,
+        "y": 200,
+        "g": "grp_simulador"
+    },
+    {
+        "id": "w_sim_esp32",
+        "type": "ui-switch",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 2,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "decouple": false,
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "group": "g_simulacao",
+        "label": "ESP32 / internet ligados",
+        "topic": "sim/esp32Ligado",
+        "x": 460,
+        "y": 240,
+        "g": "grp_simulador"
+    },
+    {
+        "id": "w_sim_dht",
+        "type": "ui-switch",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 3,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "decouple": false,
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "group": "g_simulacao",
+        "label": "Simular falha no DHT11",
+        "topic": "sim/falhaDht",
+        "x": 460,
+        "y": 280,
+        "g": "grp_simulador"
+    },
+    {
+        "id": "w_sim_solo",
+        "type": "ui-switch",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 4,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "decouple": false,
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "row-spread",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "group": "g_simulacao",
+        "label": "Simular sensor de solo solto",
+        "topic": "sim/falhaSolo",
+        "x": 460,
+        "y": 320,
+        "g": "grp_simulador"
+    },
+    {
+        "id": "w_sim_secar",
+        "type": "ui-button",
+        "z": "tab_irrigacao",
+        "name": "",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "weather-sunny",
+        "iconPosition": "left",
+        "payload": "true",
+        "payloadType": "bool",
+        "topicType": "str",
+        "buttonColor": "#8d6e63",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "group": "g_simulacao",
+        "label": "Secar o solo (testa a rega automática)",
+        "topic": "sim/secar",
+        "x": 460,
+        "y": 360,
+        "g": "grp_simulador"
+    },
+    {
+        "id": "c_titulo",
+        "type": "comment",
+        "z": "tab_irrigacao",
+        "name": "Desative o \"tick (1 s)\" para usar o MQTT real",
+        "info": "O simulador segue as mesmas regras do firmware (config.h e irrigacao.cpp) e publica no mesmo formato UltraLight do ESP32.\nPara usar o dispositivo de verdade: desative o nó \"tick (1 s)\", ative os três nós MQTT abaixo e ajuste o IP do broker.",
+        "x": 300,
+        "y": 80,
+        "wires": [],
+        "g": "grp_simulador"
+    },
+    {
+        "id": "n_tick",
+        "type": "inject",
+        "z": "tab_irrigacao",
+        "name": "tick (1 s)",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.5",
+        "topic": "tick",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "n_simulador"
+            ]
+        ],
+        "g": "grp_simulador"
+    },
+    {
+        "id": "n_simulador",
+        "type": "function",
+        "z": "tab_irrigacao",
+        "name": "Simulador Arduino + ESP32",
+        "func": "// Simula o Arduino UNO + ESP32, com as mesmas regras do firmware\n// (Arduino/src/config.h e Arduino/src/irrigacao/irrigacao.cpp).\n//\n// Entradas (msg.topic):\n//   \"tick\"               a cada 1 s: avança a \"física\" e decide a rega\n//   \"/TEF/irrig001/cmd\"  comando vindo do dashboard (irrig001@regar|5)\n//   \"sim/<chave>\"        painel \"Simulação\" (liga/desliga Arduino, falhas...)\n// Saída 1: o que o ESP32 publicaria em /TEF/irrig001/attrs  (UltraLight 2.0)\n// Saída 2: o que o ESP32 publicaria em /TEF/irrig001/cmdexe (resposta do comando)\n\nconst SOLO_SECO = 100, SOLO_MEDIO = 300, UMIDADE_AR_BAIXA = 30;\nconst REGA_PADRAO_S = 3, REGA_MAX_S = 30;\nconst INTERVALO_MIN_REGAS_MS = 30000, INTERVALO_ENVIO_MS = 2000;\nconst TIMEOUT_ARDUINO_MS = 6000, REENVIO_LINK_MS = 10000;\n\nconst agora = Date.now();\nconst s = context.get('s') || {\n    solo: 170, umidAr: 50, temp: 24, modo: 'A',\n    valvulaAteMs: 0, ultimaRegaMs: 0, jaRegou: false,\n    falhaDht: false, falhaSolo: false,\n    arduinoLigado: true, esp32Ligado: true,\n    arduinoOnline: true, ultimoQuadroMs: agora,\n    ultimoEnvioMs: 0, ultimoLinkMs: 0, inicioMs: agora\n};\nconst valvulaAberta = () => agora < s.valvulaAteMs;\nfunction abrir(segundos) {\n    s.valvulaAteMs = agora + segundos * 1000;\n    s.ultimaRegaMs = agora;\n    s.jaRegou = true;\n}\n\nlet attrs = null, cmdexe = null;\nconst topico = msg.topic || '';\n\nif (topico.startsWith('sim/')) {\n    // Painel de simulação\n    const chave = topico.slice(4);\n    if (chave === 'secar') s.solo = 60;\n    else if (chave in s) s[chave] = !!msg.payload;\n\n} else if (topico.endsWith('/cmd')) {\n    // Comando da nuvem: o ESP32 repassa ao Arduino e devolve a resposta\n    if (!s.esp32Ligado) { context.set('s', s); return null; }  // ninguém ouvindo\n    const [cmd, valor] = (String(msg.payload).split('@')[1] || '').split('|');\n    let res;\n    if (!s.arduinoOnline) res = 'ARDUINO_OFFLINE';\n    else if (cmd === 'regar') {\n        const n = Number(valor);\n        if (!Number.isInteger(n) || n < 0 || n > REGA_MAX_S) res = 'ERRO_VALOR';\n        else { if (n === 0) s.valvulaAteMs = 0; else abrir(n); res = 'OK'; }\n    } else if (cmd === 'definirModo') {\n        if (valor === 'A' || valor === 'M') { s.modo = valor; res = 'OK'; }\n        else res = 'ERRO_VALOR';\n    } else res = 'ERRO';\n    cmdexe = { topic: '/TEF/irrig001/cmdexe', payload: 'irrig001@' + cmd + '|' + res };\n\n} else {\n    // tick: 1 segundo de \"física\"\n    const t = (agora - s.inicioMs) / 1000;\n    const ruido = (a) => (Math.random() - 0.5) * 2 * a;\n    s.temp = 25 + 5 * Math.sin(t / 240) + ruido(0.2);\n    s.umidAr = 45 + 20 * Math.sin(t / 300 + 2) + ruido(0.5);\n\n    if (!s.arduinoLigado) s.valvulaAteMs = 0;          // sem Arduino o servo não abre\n    if (valvulaAberta()) s.solo += 45 + ruido(5);     // regando: o solo molha rápido\n    else s.solo -= 1.5 + Math.max(0, s.temp - 20) * 0.12 + ruido(0.6);  // evaporação\n    s.solo = Math.min(900, Math.max(20, s.solo));\n\n    // Mesma decisão de irrigacaoPrecisaRegar()\n    if (s.arduinoLigado && s.modo === 'A' && !valvulaAberta() && !s.falhaSolo &&\n        !(s.jaRegou && agora - s.ultimaRegaMs < INTERVALO_MIN_REGAS_MS)) {\n        const soloSeco = s.solo < SOLO_SECO;\n        const arSeco = !s.falhaDht && s.umidAr < UMIDADE_AR_BAIXA && s.solo < SOLO_MEDIO;\n        if (soloSeco || arSeco) abrir(REGA_PADRAO_S);\n    }\n\n    // Lado do ESP32: vigia o Arduino e publica no MQTT\n    if (s.arduinoLigado) s.ultimoQuadroMs = agora;     // o Arduino manda $D a cada 2 s\n    const estavaOnline = s.arduinoOnline;\n    s.arduinoOnline = agora - s.ultimoQuadroMs <= TIMEOUT_ARDUINO_MS;\n\n    if (s.esp32Ligado) {\n        if (s.arduinoLigado && s.arduinoOnline && agora - s.ultimoEnvioMs >= INTERVALO_ENVIO_MS) {\n            s.ultimoEnvioMs = agora;\n            let ul = '';\n            if (!s.falhaSolo) ul += 's|' + Math.round(s.solo) + '|';\n            if (!s.falhaDht) ul += 'u|' + s.umidAr.toFixed(1) + '|t|' + s.temp.toFixed(1) + '|';\n            const erros = (s.falhaDht ? 1 : 0) | (s.falhaSolo ? 2 : 0);\n            ul += 'v|' + (valvulaAberta() ? 1 : 0) + '|m|' + s.modo + '|e|' + erros + '|l|1';\n            attrs = { topic: '/TEF/irrig001/attrs', payload: ul };\n        } else if (!s.arduinoOnline && (estavaOnline || agora - s.ultimoLinkMs >= REENVIO_LINK_MS)) {\n            s.ultimoLinkMs = agora;\n            attrs = { topic: '/TEF/irrig001/attrs', payload: 'l|0' };\n        }\n    }\n}\n\ncontext.set('s', s);\nnode.status(!s.esp32Ligado ? { fill: 'grey', shape: 'ring', text: 'ESP32 desligado' }\n    : !s.arduinoOnline ? { fill: 'red', shape: 'ring', text: 'Arduino offline' }\n    : { fill: valvulaAberta() ? 'blue' : 'green', shape: 'dot',\n        text: 'solo ' + Math.round(s.solo) + ' | ' + (s.modo === 'A' ? 'AUTO' : 'MANUAL') + (valvulaAberta() ? ' | regando' : '') });\nreturn [attrs, cmdexe];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 260,
+        "outputLabels": [
+            "/TEF/irrig001/attrs",
+            "/TEF/irrig001/cmdexe"
+        ],
+        "wires": [
+            [
+                "n_decodificador"
+            ],
+            [
+                "n_decodificador"
+            ]
+        ],
+        "g": "grp_simulador"
+    },
+    {
+        "id": "n_inicio_sim",
+        "type": "inject",
+        "z": "tab_irrigacao",
+        "name": "liga as chaves no início",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.3",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 170,
+        "y": 240,
+        "wires": [
+            [
+                "w_sim_arduino",
+                "w_sim_esp32"
+            ]
+        ],
+        "g": "grp_simulador"
+    },
+    {
+        "id": "c_mqtt",
+        "type": "comment",
+        "z": "tab_irrigacao",
+        "name": "Ative estes nós quando tiver o ESP32",
+        "info": "",
+        "x": 270,
+        "y": 480,
+        "wires": [],
+        "g": "grp_mqtt"
+    },
+    {
+        "id": "n_broker",
+        "type": "mqtt-broker",
+        "name": "FIWARE Mosquitto",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "n_mqtt_attrs",
+        "type": "mqtt in",
+        "z": "tab_irrigacao",
+        "d": true,
+        "name": "dados do ESP32",
+        "topic": "/TEF/irrig001/attrs",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "n_broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 540,
+        "wires": [
+            [
+                "n_decodificador"
+            ]
+        ],
+        "g": "grp_mqtt"
+    },
+    {
+        "id": "n_mqtt_cmdexe",
+        "type": "mqtt in",
+        "z": "tab_irrigacao",
+        "d": true,
+        "name": "respostas do ESP32",
+        "topic": "/TEF/irrig001/cmdexe",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "n_broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 460,
+        "y": 540,
+        "wires": [
+            [
+                "n_decodificador"
+            ]
+        ],
+        "g": "grp_mqtt"
+    },
+    {
+        "id": "n_mqtt_cmd",
+        "type": "mqtt out",
+        "z": "tab_irrigacao",
+        "d": true,
+        "name": "comandos para o ESP32 (MQTT real)",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "n_broker",
+        "x": 1100,
+        "y": 760,
+        "wires": [],
+        "g": "grp_controle"
+    },
+    {
+        "id": "n_decodificador",
+        "type": "function",
+        "z": "tab_irrigacao",
+        "name": "Decodificar UltraLight",
+        "func": "// Lê o que o ESP32 publica no FIWARE (UltraLight 2.0) e prepara cada widget.\n// Funciona do mesmo jeito com o simulador ou com o MQTT de verdade.\n//\n// Saídas: 1 gauge solo | 2 nível do solo | 3 gauge umidade do ar | 4 gauge temperatura\n//         5 estado do sistema | 6 chave do modo | 7 gráfico do solo | 8 gráfico do ar\n//         9 notificações | 10 resposta do comando\n\nconst SOLO_SECO = 100, SOLO_MEDIO = 300, SOLO_ALTO = 500;\nconst SEM_DADOS_MS = 15000, SEM_RESPOSTA_MS = 6000;\n\nconst agora = Date.now();\nconst e = flow.get('estado') || {\n    solo: null, umidAr: null, temp: null, valvula: 0, modo: 'A', erros: 0,\n    arduinoOnline: null, ultimoDadoMs: 0, regas: 0, ultimaRega: null, avisosAtivos: []\n};\nconst out = new Array(10).fill(null);\nconst topico = msg.topic || '';\n\nconst hora = (ms) => new Date(ms).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo' });\nfunction nivelSolo(v) {\n    if (v == null) return '—';\n    if (v < SOLO_SECO) return 'SECO';\n    if (v < SOLO_MEDIO) return 'BAIXO';\n    if (v < SOLO_ALTO) return 'MÉDIO';\n    return 'ALTO';\n}\nconst NOMES = { regar: 'Regar', definirModo: 'Trocar modo' };\nconst notificacoes = [];\n\nif (topico.endsWith('/cmdexe')) {\n    // \"irrig001@regar|OK\"\n    const [cmd, res] = (String(msg.payload).split('@')[1] || '').split('|');\n    flow.set('comandoPendente', null);\n    out[9] = { payload: (NOMES[cmd] || cmd) + ': ' + res + ' (' + hora(agora) + ')' };\n    if (res !== 'OK') notificacoes.push('Comando \"' + (NOMES[cmd] || cmd) + '\" falhou: ' + res);\n\n} else if (topico.endsWith('/attrs')) {\n    // \"s|350|u|55.3|t|24.3|v|0|m|A|e|0|l|1\"  (ou só \"l|0\" quando o Arduino cai)\n    const partes = String(msg.payload).split('|');\n    const d = {};\n    for (let i = 0; i + 1 < partes.length; i += 2) d[partes[i]] = partes[i + 1];\n\n    if ('l' in d) e.arduinoOnline = d.l === '1';\n    if ('v' in d) {\n        const valvulaAntes = e.valvula;\n        e.solo = 's' in d ? parseInt(d.s, 10) : null;           // não vem se o sensor falhar\n        e.umidAr = 'u' in d ? parseFloat(d.u) : null;           // não vem se o DHT11 falhar\n        e.temp = 't' in d ? parseFloat(d.t) : null;\n        e.valvula = parseInt(d.v, 10) || 0;\n        e.modo = d.m || e.modo;\n        e.erros = parseInt(d.e, 10) || 0;\n        e.ultimoDadoMs = agora;\n\n        if (e.valvula === 1 && valvulaAntes !== 1) {\n            e.regas++;\n            const peloPainel = agora - (flow.get('ultimoComandoMs') || 0) < 5000;\n            const origem = peloPainel ? 'pelo dashboard' : (e.modo === 'A' ? 'automática' : 'botão no vaso');\n            e.ultimaRega = hora(agora) + ' (' + origem + ')';\n            if (!peloPainel && e.modo === 'A') notificacoes.push('Rega automática iniciada (solo ' + nivelSolo(e.solo) + ')');\n        }\n\n        if (e.solo != null) {\n            out[0] = { payload: e.solo };\n            out[1] = { payload: nivelSolo(e.solo) + '  (' + e.solo + ')' };\n            out[6] = [\n                { topic: 'Solo', payload: e.solo },\n                { topic: 'Seco (100)', payload: SOLO_SECO },\n                { topic: 'Médio (300)', payload: SOLO_MEDIO }\n            ];\n        } else {\n            out[1] = { payload: 'ERRO NO SENSOR' };\n        }\n        if (e.umidAr != null) {\n            out[2] = { payload: e.umidAr };\n            out[3] = { payload: e.temp };\n            out[7] = [\n                { topic: 'Umidade do ar (%)', payload: e.umidAr },\n                { topic: 'Temperatura (°C)', payload: e.temp }\n            ];\n        }\n        out[5] = { payload: e.modo };\n    }\n}\n\n// Comando sem resposta (ESP32 desligado ou sem internet)\nconst pendente = flow.get('comandoPendente');\nif (pendente && agora - pendente.ms > SEM_RESPOSTA_MS) {\n    flow.set('comandoPendente', null);\n    out[9] = { payload: (NOMES[pendente.cmd] || pendente.cmd) + ': SEM_RESPOSTA (' + hora(agora) + ')' };\n    notificacoes.push('O dispositivo não respondeu ao comando');\n}\n\n// Avisos (mesmas regras do dashboard em Python)\nconst semDadosMs = e.ultimoDadoMs ? agora - e.ultimoDadoMs : Infinity;\nconst avisos = [];\nif (e.arduinoOnline === false) avisos.push({ id: 'offline', nivel: 'ruim', texto: 'Arduino offline: o ESP32 não recebe dados dele' });\nelse if (semDadosMs > SEM_DADOS_MS) avisos.push({ id: 'semdados', nivel: 'atencao',\n    texto: e.ultimoDadoMs ? 'Sem dados novos há ' + Math.round(semDadosMs / 1000) + ' s (ESP32 ou internet fora?)' : 'Aguardando os primeiros dados...' });\nif (e.erros & 2) avisos.push({ id: 'solo', nivel: 'ruim', texto: 'Sensor de solo desconectado: rega automática suspensa' });\nif (e.erros & 1) avisos.push({ id: 'dht', nivel: 'atencao', texto: 'Falha no DHT11 (umidade e temperatura do ar)' });\n\n// Notifica só quando um aviso aparece (não a cada 2 s)\nfor (const a of avisos) if (!e.avisosAtivos.includes(a.id) && e.ultimoDadoMs) notificacoes.push(a.texto);\nfor (const id of e.avisosAtivos) if (!avisos.some(a => a.id === id) && id === 'offline') notificacoes.push('Arduino voltou a se comunicar');\ne.avisosAtivos = avisos.map(a => a.id);\nif (notificacoes.length) out[8] = { payload: notificacoes.join(' | ') };\n\nconst online = e.arduinoOnline !== false && semDadosMs <= SEM_DADOS_MS;\nconst textoErros = ['OK', 'Falha no DHT11', 'Solo desconectado', 'DHT11 e solo com falha'][e.erros & 3];\nout[4] = { payload: {\n    avisos,\n    linhas: [\n        { rotulo: 'Válvula', valor: e.valvula ? 'ABERTA, regando' : 'Fechada', classe: e.valvula ? 'agua' : '' },\n        { rotulo: 'Modo', valor: e.modo === 'A' ? 'AUTO' : 'MANUAL', classe: '' },\n        { rotulo: 'Arduino e ESP32', valor: e.arduinoOnline === false ? 'Offline' : (e.arduinoOnline ? 'Online' : '—'), classe: e.arduinoOnline === false ? 'ruim' : 'bom' },\n        { rotulo: 'Sensores', valor: textoErros, classe: e.erros ? 'ruim' : 'bom' },\n        { rotulo: 'Último dado', valor: e.ultimoDadoMs ? hora(e.ultimoDadoMs) : '—', classe: online ? '' : 'atencao' },\n        { rotulo: 'Regas desde que abriu', valor: String(e.regas), classe: '' },\n        { rotulo: 'Última rega', valor: e.ultimaRega || '—', classe: '' }\n    ]\n} };\n\nflow.set('estado', e);\nreturn out;\n",
+        "outputs": 10,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 300,
+        "outputLabels": [
+            "gauge solo",
+            "nível do solo",
+            "umidade do ar",
+            "temperatura",
+            "estado",
+            "modo",
+            "gráfico solo",
+            "gráfico ar",
+            "notificação",
+            "resposta"
+        ],
+        "wires": [
+            [
+                "w_gauge_solo"
+            ],
+            [
+                "w_nivel_solo"
+            ],
+            [
+                "w_gauge_umidade"
+            ],
+            [
+                "w_gauge_temp"
+            ],
+            [
+                "w_estado"
+            ],
+            [
+                "w_switch_modo"
+            ],
+            [
+                "w_chart_solo"
+            ],
+            [
+                "w_chart_ar"
+            ],
+            [
+                "w_notificacao"
+            ],
+            [
+                "w_resposta"
+            ]
+        ],
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "n_vigia",
+        "type": "inject",
+        "z": "tab_irrigacao",
+        "name": "vigia (2 s)",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "vigia",
+        "x": 1080,
+        "y": 120,
+        "wires": [
+            [
+                "n_decodificador"
+            ]
+        ],
+        "g": "grp_dashboard"
+    },
+    {
+        "id": "n_salvar_segundos",
+        "type": "change",
+        "z": "tab_irrigacao",
+        "name": "guarda o tempo de rega",
+        "rules": [
+            {
+                "t": "set",
+                "p": "segundosRega",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 680,
+        "wires": [
+            []
+        ],
+        "g": "grp_controle"
+    },
+    {
+        "id": "n_comando",
+        "type": "function",
+        "z": "tab_irrigacao",
+        "name": "Montar comando",
+        "func": "// Monta o comando no formato do IoT Agent (UltraLight): irrig001@<comando>|<valor>\n// O ESP32 assina /TEF/irrig001/cmd e responde em /TEF/irrig001/cmdexe.\nlet cmd, valor;\nif (msg.topic === 'regar') { cmd = 'regar'; valor = flow.get('segundosRega') ?? 5; }\nelse if (msg.topic === 'parar') { cmd = 'regar'; valor = 0; }\nelse if (msg.topic === 'modo') { cmd = 'definirModo'; valor = msg.payload; }\nelse return null;\n\nflow.set('ultimoComandoMs', Date.now());\nflow.set('comandoPendente', { cmd, ms: Date.now() });\n\nconst texto = cmd === 'regar' ? (valor ? 'Regar ' + valor + ' s' : 'Parar') : 'Modo ' + (valor === 'A' ? 'AUTO' : 'MANUAL');\nreturn [\n    { topic: '/TEF/irrig001/cmd', payload: 'irrig001@' + cmd + '|' + valor },\n    { payload: texto + ': enviado, aguardando o dispositivo...' }\n];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 760,
+        "outputLabels": [
+            "/TEF/irrig001/cmd",
+            "texto de espera"
+        ],
+        "wires": [
+            [
+                "n_simulador",
+                "n_mqtt_cmd"
+            ],
+            [
+                "w_resposta"
+            ]
+        ],
+        "g": "grp_controle"
+    },
+    {
+        "id": "n_inicio_slider",
+        "type": "inject",
+        "z": "tab_irrigacao",
+        "name": "5 s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.3",
+        "topic": "",
+        "payload": "5",
+        "payloadType": "num",
+        "x": 150,
+        "y": 680,
+        "wires": [
+            [
+                "w_slider_segundos",
+                "n_salvar_segundos"
+            ]
+        ],
+        "g": "grp_controle"
+    },
+    {
+        "id": "grp_simulador",
+        "type": "group",
+        "z": "tab_irrigacao",
+        "name": "1. Simulador (Arduino + ESP32 falsos)",
+        "style": {
+            "fill": "#ffdf7f",
+            "fill-opacity": "0.35",
+            "label": true
+        },
+        "nodes": [
+            "c_titulo",
+            "n_tick",
+            "n_inicio_sim",
+            "w_sim_arduino",
+            "w_sim_esp32",
+            "w_sim_dht",
+            "w_sim_solo",
+            "w_sim_secar",
+            "n_simulador"
+        ],
+        "x": 25,
+        "y": 25,
+        "w": 884,
+        "h": 370
+    },
+    {
+        "id": "grp_mqtt",
+        "type": "group",
+        "z": "tab_irrigacao",
+        "name": "2. MQTT real do FIWARE (desativado)",
+        "style": {
+            "fill": "#d1d1d1",
+            "fill-opacity": "0.35",
+            "label": true
+        },
+        "nodes": [
+            "c_mqtt",
+            "n_mqtt_attrs",
+            "n_mqtt_cmdexe"
+        ],
+        "x": 53,
+        "y": 425,
+        "w": 530,
+        "h": 150
+    },
+    {
+        "id": "grp_dashboard",
+        "type": "group",
+        "z": "tab_irrigacao",
+        "name": "3. Dashboard: decodifica os dados e mostra na tela",
+        "style": {
+            "fill": "#a4d4ff",
+            "fill-opacity": "0.35",
+            "label": true
+        },
+        "nodes": [
+            "n_vigia",
+            "n_decodificador",
+            "w_gauge_solo",
+            "w_nivel_solo",
+            "w_gauge_umidade",
+            "w_gauge_temp",
+            "w_estado",
+            "w_switch_modo",
+            "w_chart_solo",
+            "w_chart_ar",
+            "w_notificacao",
+            "w_resposta"
+        ],
+        "x": 943,
+        "y": 65,
+        "w": 645,
+        "h": 450
+    },
+    {
+        "id": "grp_controle",
+        "type": "group",
+        "z": "tab_irrigacao",
+        "name": "4. Controle remoto (botões viram comandos)",
+        "style": {
+            "fill": "#c8e7a7",
+            "fill-opacity": "0.35",
+            "label": true
+        },
+        "nodes": [
+            "n_inicio_slider",
+            "w_slider_segundos",
+            "w_btn_regar",
+            "w_btn_parar",
+            "n_salvar_segundos",
+            "n_comando",
+            "n_mqtt_cmd"
+        ],
+        "x": 70,
+        "y": 625,
+        "w": 1209,
+        "h": 190
+    }
+]
